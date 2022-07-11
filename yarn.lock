@@ -289,6 +289,11 @@
   resolved "https://registry.npmjs.org/@arco-themes/react-arco-pro/-/react-arco-pro-0.0.7.tgz#d1665391ebf3bfd702ce0d94680254baada2cc8d"
   integrity sha512-ymLuKbfwdYha9noATRQXe5qQH4THjqlEkZTWtAysq4GssYeemNObof51NnuJSMyQtdTS8KC7r//+zHjZrk4dcA==
 
+"@arco-themes/react-juzi001@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.npmmirror.com/@arco-themes/react-juzi001/-/react-juzi001-0.0.1.tgz#d8500e083c70549510a8ebb0e2c0a4658e5cfc9a"
+  integrity sha512-Yc6x68id/t56RZicAz7k9zs8KGmp4ZXh0qGIgflVhhHvLwopvVEVoqIYaosXQl22HLmuKnftq09izLuwqSUAjA==
+
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"

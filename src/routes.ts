@@ -1,5 +1,5 @@
-import auth, { AuthParams } from '@/utils/authentication';
-import { useEffect, useMemo, useState } from 'react';
+import auth, { AuthParams, UserPermission } from '@/utils/authentication';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type IRoute = AuthParams & {
   name: string;
@@ -176,41 +176,44 @@ export const generatePermission = (role: string) => {
   return result;
 };
 
-const useRoute = (userPermission): [IRoute[], string] => {
-  const filterRoute = (routes: IRoute[], arr = []): IRoute[] => {
-    if (!routes.length) {
-      return [];
-    }
-    for (const route of routes) {
-      const { requiredPermissions, oneOfPerm } = route;
-      let visible = true;
-      if (requiredPermissions) {
-        visible = auth({ requiredPermissions, oneOfPerm }, userPermission);
+const useRoute = (userPermission: UserPermission): [IRoute[], string] => {
+  const filterRoute = useCallback(
+    (routes: IRoute[], arr = []): IRoute[] => {
+      if (!routes.length) {
+        return [];
       }
-
-      if (!visible) {
-        continue;
-      }
-      if (route.children && route.children.length) {
-        const newRoute = { ...route, children: [] };
-        filterRoute(route.children, newRoute.children);
-        if (newRoute.children.length) {
-          arr.push(newRoute);
+      for (const route of routes) {
+        const { requiredPermissions, oneOfPerm } = route;
+        let visible = true;
+        if (requiredPermissions) {
+          visible = auth({ requiredPermissions, oneOfPerm }, userPermission);
         }
-      } else {
-        arr.push({ ...route });
-      }
-    }
 
-    return arr;
-  };
+        if (!visible) {
+          continue;
+        }
+        if (route.children && route.children.length) {
+          const newRoute = { ...route, children: [] };
+          filterRoute(route.children, newRoute.children);
+          if (newRoute.children.length) {
+            arr.push(newRoute);
+          }
+        } else {
+          arr.push({ ...route });
+        }
+      }
+
+      return arr;
+    },
+    [userPermission]
+  );
 
   const [permissionRoute, setPermissionRoute] = useState(routes);
 
   useEffect(() => {
     const newRoutes = filterRoute(routes);
     setPermissionRoute(newRoutes);
-  }, [JSON.stringify(userPermission)]);
+  }, [filterRoute]);
 
   const defaultRoute = useMemo(() => {
     const first = permissionRoute[0];
