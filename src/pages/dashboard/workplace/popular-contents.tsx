@@ -14,24 +14,33 @@ function PopularContent() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
 
-  const fetchData = useCallback(() => {
-    setLoading(true);
-    axios
-      .get(
-        `/api/workplace/popular-contents?page=${page}&pageSize=5&category=${type}`
-      )
-      .then((res) => {
-        setData(res.data.list);
-        setTotal(res.data.total);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [page, type]);
+  const fetchData = useCallback(
+    (ac: AbortController) => {
+      setLoading(true);
+      axios
+        .get(
+          `/api/workplace/popular-contents?page=${page}&pageSize=5&category=${type}`,
+          { signal: ac.signal }
+        )
+        .then((res) => {
+          setData(res.data.list);
+          setTotal(res.data.total);
+        })
+        .catch()
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [page, type]
+  );
 
   useEffect(() => {
-    fetchData();
-  }, [page, fetchData]);
+    const ac = new AbortController();
+    fetchData(ac);
+    return () => {
+      ac.abort();
+    };
+  }, [fetchData]);
 
   const columns = [
     {

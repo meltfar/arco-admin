@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Drawer, Alert, Message } from '@arco-design/web-react';
 import { IconSettings } from '@arco-design/web-react/icon';
 import copy from 'copy-to-clipboard';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '../../store';
+import { useAppSelector } from '../../store';
 import Block from './block';
 import ColorPanel from './color';
 import IconButton from '../NavBar/IconButton';
@@ -17,7 +16,7 @@ function Setting(props: SettingProps) {
   const { trigger } = props;
   const [visible, setVisible] = useState(false);
   const locale = useLocale();
-  const settings = useSelector((state: GlobalState) => state.settings);
+  const settings = useAppSelector((state) => state.setting.settings);
 
   function onCopySettings() {
     copy(JSON.stringify(settings, null, 2));

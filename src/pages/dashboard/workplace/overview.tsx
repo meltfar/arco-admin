@@ -7,7 +7,6 @@ import {
   Skeleton,
   Link,
 } from '@arco-design/web-react';
-import { useSelector } from 'react-redux';
 import { IconCaretUp } from '@arco-design/web-react/icon';
 import OverviewAreaLine from '@/components/Chart/overview-area-line';
 import axios from 'axios';
@@ -18,6 +17,7 @@ import IconCalendar from './assets/calendar.svg';
 import IconComments from './assets/comments.svg';
 import IconContent from './assets/content.svg';
 import IconIncrease from './assets/increase.svg';
+import { useAppSelector } from '@/store';
 
 const { Row, Col } = Grid;
 
@@ -61,7 +61,7 @@ function Overview() {
   const [loading, setLoading] = useState(true);
   const t = useLocale(locale);
 
-  const userInfo = useSelector((state: any) => state.userInfo || {});
+  const userInfo = useAppSelector((state) => state.setting.userInfo);
 
   const fetchData = () => {
     setLoading(true);

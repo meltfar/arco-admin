@@ -3,23 +3,18 @@ import { useRouter } from 'next/router';
 import cookies from 'next-cookies';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import '../style/global.less';
 import { ConfigProvider } from '@arco-design/web-react';
 import zhCN from '@arco-design/web-react/es/locale/zh-CN';
 import enUS from '@arco-design/web-react/es/locale/en-US';
-import axios from 'axios';
 import NProgress from 'nprogress';
-import rootReducer from '../store';
+import { store} from '../store';
 import { GlobalContext } from '../context';
-import checkLogin from '@/utils/checkLogin';
 import changeTheme from '@/utils/changeTheme';
 import useStorage from '@/utils/useStorage';
 import Layout from './layout';
 import '../mock';
-
-const store = createStore(rootReducer);
 
 interface RenderConfig {
   arcoLang?: string;
@@ -43,30 +38,9 @@ export default function MyApp({
       case 'en-US':
         return enUS;
       default:
-        return enUS;
+        return zhCN;
     }
   }, [lang]);
-
-  function fetchUserInfo() {
-    store.dispatch({
-      type: 'update-userInfo',
-      payload: { userLoading: true },
-    });
-    axios.get('/api/user/userInfo').then((res) => {
-      store.dispatch({
-        type: 'update-userInfo',
-        payload: { userInfo: res.data, userLoading: false },
-      });
-    });
-  }
-
-  useEffect(() => {
-    if (checkLogin()) {
-      fetchUserInfo();
-    } else if (window.location.pathname.replace(/\//g, '') !== 'login') {
-      window.location.pathname = '/login';
-    }
-  }, []);
 
   useEffect(() => {
     const handleStart = () => {

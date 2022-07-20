@@ -2,19 +2,19 @@ import React from 'react';
 import { Trigger, Typography } from '@arco-design/web-react';
 import { SketchPicker } from 'react-color';
 import { generate, getRgbStr } from '@arco-design/color';
-import { useSelector, useDispatch } from 'react-redux';
-import { GlobalState } from '../../store';
 import useLocale from '@/utils/useLocale';
 import styles from './style/color-panel.module.less';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { updateSettings } from '@/store/setting';
 
 function ColorPanel() {
   const theme =
     document.querySelector('body').getAttribute('arco-theme') || 'light';
-  const settings = useSelector((state: GlobalState) => state.settings);
+  const settings = useAppSelector((state) => state.setting.settings);
   const locale = useLocale();
   const themeColor = settings.themeColor;
   const list = generate(themeColor, { list: true });
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <div>
@@ -26,10 +26,11 @@ function ColorPanel() {
             color={themeColor}
             onChangeComplete={(color) => {
               const newColor = color.hex;
-              dispatch({
-                type: 'update-settings',
-                payload: { settings: { ...settings, themeColor: newColor } },
-              });
+              dispatch(
+                updateSettings({
+                  settings: { ...settings, themeColor: newColor },
+                })
+              );
               const newList = generate(newColor, {
                 list: true,
                 dark: theme === 'dark',

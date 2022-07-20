@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import {
   Tooltip,
   Input,
@@ -24,8 +24,6 @@ import {
   IconTag,
   IconLoading,
 } from '@arco-design/web-react/icon';
-import { useSelector, useDispatch } from 'react-redux';
-import { GlobalState } from '@/store';
 import { GlobalContext } from '@/context';
 import useLocale from '@/utils/useLocale';
 import Logo from '@/assets/logo.svg';
@@ -36,13 +34,16 @@ import styles from './style/index.module.less';
 import defaultLocale from '@/locale';
 import useStorage from '@/utils/useStorage';
 import { generatePermission } from '@/routes';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { updateUserInfo } from '@/store/setting';
 
 function Navbar({ show }: { show: boolean }) {
   const t = useLocale();
-  const { userInfo, userLoading } = useSelector((state: GlobalState) => state);
-  const dispatch = useDispatch();
+  const { userInfo, userLoading } = useAppSelector((state) => state.setting);
+  const dispatch = useAppDispatch();
 
-  const [_, setUserStatus] = useStorage('userStatus');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_userStatus, setUserStatus] = useStorage('userStatus');
   const [role, setRole] = useStorage('userRole', 'admin');
 
   const { setLang, lang, theme, setTheme } = useContext(GlobalContext);
@@ -52,7 +53,7 @@ function Navbar({ show }: { show: boolean }) {
     window.location.href = '/login';
   }
 
-  function onMenuItemClick(key) {
+  function onMenuItemClick(key: string) {
     if (key === 'logout') {
       logout();
     } else {
@@ -60,17 +61,20 @@ function Navbar({ show }: { show: boolean }) {
     }
   }
 
+  const permissions = useMemo(() => generatePermission(role), [role]);
+
   useEffect(() => {
-    dispatch({
-      type: 'update-userInfo',
-      payload: {
-        userInfo: {
-          ...userInfo,
-          permissions: generatePermission(role),
-        },
-      },
-    });
-  }, [role]);
+    if (userInfo.permissions !== permissions) {
+      dispatch(
+        updateUserInfo({
+          userInfo: {
+            ...userInfo,
+            permissions,
+          },
+        })
+      );
+    }
+  }, [dispatch, permissions, userInfo]);
 
   if (!show) {
     return (

@@ -13,7 +13,6 @@ import {
   IconMenuFold,
   IconMenuUnfold,
 } from '@arco-design/web-react/icon';
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import qs from 'query-string';
@@ -21,10 +20,12 @@ import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
 import useRoute, { IRoute } from '@/routes';
 import useLocale from '@/utils/useLocale';
-import { GlobalState } from '@/store';
 import getUrlParams from '@/utils/getUrlParams';
 import styles from '@/style/layout.module.less';
 import NoAccess from '@/pages/exception/403';
+import { useAppDispatch, useAppSelector } from '@/store';
+import checkLogin from '@/utils/checkLogin';
+import { fetchUserInfo } from '@/store/setting';
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -61,9 +62,11 @@ function PageLayout({ children }: { children: ReactNode }) {
   const pathname = router.pathname;
   const currentComponent = qs.parseUrl(pathname).url.slice(1);
   const locale = useLocale();
-  const { userInfo, settings, userLoading } = useSelector(
-    (state: GlobalState) => state
+  const { userInfo, settings, userLoading } = useAppSelector(
+    (state) => state.setting
   );
+
+  const dispatch = useAppDispatch();
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
@@ -154,6 +157,14 @@ function PageLayout({ children }: { children: ReactNode }) {
     const routeConfig = routeMap.current.get(pathname);
     setBreadCrumb(routeConfig || []);
   }, [defaultRoute, pathname]);
+
+  useEffect(() => {
+    if (checkLogin()) {
+      dispatch(fetchUserInfo(123));
+    } else if (window.location.pathname.replace(/\//g, '') !== 'login') {
+      window.location.pathname = '/login';
+    }
+  }, [dispatch]);
 
   return (
     <Layout className={styles.layout}>

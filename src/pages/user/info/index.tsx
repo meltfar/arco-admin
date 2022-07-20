@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 import {
   Typography,
   Grid,
@@ -17,13 +16,14 @@ import { Card } from '@arco-design/web-react';
 import MyProject from './my-projects';
 import MyTeam from './my-team';
 import LatestNews from './latest-news';
+import { useAppSelector } from '@/store';
 
 const { Title } = Typography;
 const { Row, Col } = Grid;
 function UserInfo() {
   const t = useLocale(locale);
-  const userInfo = useSelector((state: any) => state.userInfo);
-  const loading = useSelector((state: any) => state.userLoading);
+  const userInfo = useAppSelector((state) => state.setting.userInfo);
+  const loading = useAppSelector((state) => state.setting.userLoading);
 
   const [noticeLoading, setNoticeLoading] = useState(false);
 

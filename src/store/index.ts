@@ -1,43 +1,18 @@
-import defaultSettings from '../settings.json';
-export interface GlobalState {
-  settings?: typeof defaultSettings;
-  userInfo?: {
-    name?: string;
-    avatar?: string;
-    job?: string;
-    organization?: string;
-    location?: string;
-    email?: string;
-    permissions: Record<string, string[]>;
-  };
-  userLoading?: boolean;
-}
+import { configureStore } from '@reduxjs/toolkit';
+import { settingSlice } from './setting';
+import { useDispatch, useSelector } from 'react-redux';
+import type { TypedUseSelectorHook } from 'react-redux';
 
-const initialState: GlobalState = {
-  settings: defaultSettings,
-  userInfo: {
-    permissions: {},
+export const store = configureStore({
+  reducer: {
+    setting: settingSlice.reducer,
   },
-};
+});
 
-export default function store(state = initialState, action) {
-  switch (action.type) {
-    case 'update-settings': {
-      const { settings } = action.payload;
-      return {
-        ...state,
-        settings,
-      };
-    }
-    case 'update-userInfo': {
-      const { userInfo = initialState.userInfo, userLoading } = action.payload;
-      return {
-        ...state,
-        userLoading,
-        userInfo,
-      };
-    }
-    default:
-      return state;
-  }
-}
+export type RootState = ReturnType<typeof store.getState>;
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch;
+
+// Use throughout your app instead of plain `useDispatch` and `useSelector`
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

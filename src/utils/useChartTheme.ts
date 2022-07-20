@@ -1,6 +1,6 @@
+import { useAppSelector } from '@/store';
 import { G2 } from 'bizcharts';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 const defaultDarkTheme = G2.getTheme('dark');
 
@@ -10,7 +10,7 @@ G2.registerTheme('darkTheme', {
 });
 
 function useBizTheme() {
-  const theme = useSelector((state: any) => state.theme);
+  const theme = useAppSelector((state) => state.setting.settings);
   const themeName = theme === 'dark' ? 'darkTheme' : 'light';
   const [themeObj, setThemeObj] = useState(G2.getTheme(themeName));
 

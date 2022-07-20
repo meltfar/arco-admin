@@ -1,16 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import cs from 'classnames';
 import { Button } from '@arco-design/web-react';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
+import { useAppSelector } from '@/store';
 
 function Security() {
   const t = useLocale(locale);
 
-  const userInfo = useSelector((state: any) => {
-    return state.userInfo || {};
+  const userInfo = useAppSelector((state) => {
+    return state.setting.userInfo;
   });
 
   const data = [
@@ -25,8 +25,8 @@ function Security() {
     },
     {
       title: t['userSetting.security.phone'],
-      value: userInfo.phoneNumber
-        ? `${t['userSetting.security.phone.tips']} ${userInfo.phoneNumber}`
+      value: '123123123'
+        ? `${t['userSetting.security.phone.tips']} ${'123123123'}`
         : '',
     },
     {

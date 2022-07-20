@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Card, Tabs } from '@arco-design/web-react';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
@@ -8,11 +7,12 @@ import InfoForm from './info';
 import Security from './security';
 import './mock';
 import Verified from './verified';
+import { useAppSelector } from '@/store';
 
 function UserInfo() {
   const t = useLocale(locale);
-  const userInfo = useSelector((state: any) => state.userInfo);
-  const loading = useSelector((state: any) => state.userLoading);
+  const userInfo = useAppSelector((state) => state.setting.userInfo);
+  const loading = useAppSelector((state) => state.setting.userLoading);
   const [activeTab, setActiveTab] = useState('basic');
   return (
     <div>
