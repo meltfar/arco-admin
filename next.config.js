@@ -7,7 +7,7 @@ const withTM = require('next-transpile-modules')([
   '@arco-themes/react-arco-pro',
 ]);
 
-const setting = require("./src/settings.json");
+const setting = require('./src/settings.json');
 
 module.exports = withLess(
   withTM({
@@ -38,6 +38,14 @@ module.exports = withLess(
           source: '/',
           destination: '/dashboard/workplace',
           permanent: true,
+        },
+      ];
+    },
+    async rewrites() {
+      return [
+        {
+          source: '/api/:path*',
+          destination: 'http://192.168.150.73:8088/api/:path*',
         },
       ];
     },

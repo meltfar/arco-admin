@@ -14,7 +14,7 @@ import { GlobalContext } from '../context';
 import changeTheme from '@/utils/changeTheme';
 import useStorage from '@/utils/useStorage';
 import Layout from './layout';
-import '../mock';
+// import '../mock';
 
 interface RenderConfig {
   arcoLang?: string;

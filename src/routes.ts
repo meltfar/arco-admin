@@ -69,6 +69,10 @@ export const routes: IRoute[] = [
         name: 'menu.list.cardList',
         key: 'list/card',
       },
+      {
+        name: 'menu.list.insertForm',
+        key: 'list/insert',
+      },
     ],
   },
   {
