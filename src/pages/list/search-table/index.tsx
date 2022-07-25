@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Table,
   Card,
@@ -157,36 +157,29 @@ const SearchTable: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [formParams, setFormParams] = useState({});
 
-  const fetchData = useCallback(
-    (ac: AbortController) => {
-      const { current, pageSize } = pagination;
-      setLoading(true);
-      axios
-        .get('/api/list', {
-          params: {
-            page: current,
-            pageSize,
-            ...formParams,
-          },
-          signal: ac.signal,
-        })
-        .then((res) => {
-          setData(res.data.list);
-          setTotal(res.data.total);
-        })
-        .catch()
-        .finally(() => {
-          setLoading(false);
-        });
-    },
-    [formParams, pagination]
-  );
-
   useEffect(() => {
     const ac = new AbortController();
-    fetchData(ac);
+    const { current, pageSize } = pagination;
+    setLoading(true);
+    axios
+      .get('/api/list', {
+        params: {
+          page: current,
+          pageSize,
+          ...formParams,
+        },
+        signal: ac.signal,
+      })
+      .then((res) => {
+        setData(res.data.list);
+        setTotal(res.data.total);
+      })
+      .catch()
+      .finally(() => {
+        setLoading(false);
+      });
     return () => ac.abort();
-  }, [fetchData, pagination.pageSize]);
+  }, [formParams, pagination]);
 
   function onChangeTable({ current, pageSize }) {
     setPatination({

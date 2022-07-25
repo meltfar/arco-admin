@@ -12,6 +12,7 @@ export default <T>(url: string, defaultValue: T[]): [boolean, T[]] => {
       .then((res) => {
         setData(res.data);
       })
+      .catch()
       .finally(() => {
         setLoading(false);
       });

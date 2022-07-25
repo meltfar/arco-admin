@@ -34,6 +34,7 @@ function DropContent() {
       .then((res) => {
         setSourceData(res.data);
       })
+      .catch()
       .finally(() => {
         showLoading && setLoading(false);
       });

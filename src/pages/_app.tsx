@@ -9,7 +9,7 @@ import { ConfigProvider } from '@arco-design/web-react';
 import zhCN from '@arco-design/web-react/es/locale/zh-CN';
 import enUS from '@arco-design/web-react/es/locale/en-US';
 import NProgress from 'nprogress';
-import { store} from '../store';
+import { store } from '../store';
 import { GlobalContext } from '../context';
 import changeTheme from '@/utils/changeTheme';
 import useStorage from '@/utils/useStorage';
@@ -27,7 +27,7 @@ export default function MyApp({
   renderConfig,
 }: AppProps & { renderConfig: RenderConfig }) {
   const { arcoLang, arcoTheme } = renderConfig;
-  const [lang, setLang] = useStorage('arco-lang', arcoLang || 'en-US');
+  const [lang, setLang] = useStorage('arco-lang', arcoLang || 'zh-CN');
   const [theme, setTheme] = useStorage('arco-theme', arcoTheme || 'light');
   const router = useRouter();
 
@@ -69,13 +69,6 @@ export default function MyApp({
     changeTheme(theme);
   }, [lang, theme]);
 
-  const contextValue = {
-    lang,
-    setLang,
-    theme,
-    setTheme,
-  };
-
   return (
     <>
       <Head>
@@ -100,7 +93,14 @@ export default function MyApp({
         }}
       >
         <Provider store={store}>
-          <GlobalContext.Provider value={contextValue}>
+          <GlobalContext.Provider
+            value={{
+              lang,
+              setLang,
+              theme,
+              setTheme,
+            }}
+          >
             {Component.displayName === 'LoginPage' ? (
               <Component {...pageProps} suppressHydrationWarning />
             ) : (

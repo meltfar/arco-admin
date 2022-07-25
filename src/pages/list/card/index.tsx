@@ -30,6 +30,7 @@ export default function ListCard() {
       .then((res) => {
         setData(res.data);
       })
+      .catch()
       .finally(() => setLoading(false));
   };
 

@@ -49,7 +49,7 @@ function SearchForm(props: {
       >
         <Row gutter={24}>
           <Col span={colSpan}>
-            <Form.Item label={t['searchTable.columns.id']} field="id">
+            <Form.Item label={'ID'} field="id">
               <Input placeholder={t['searchForm.id.placeholder']} allowClear />
             </Form.Item>
           </Col>
