@@ -1,4 +1,4 @@
-import { Form, Input, InputTag, Message, Switch } from '@arco-design/web-react';
+import { Form, Input, InputTag, Switch } from '@arco-design/web-react';
 import React from 'react';
 
 const emailReg =
