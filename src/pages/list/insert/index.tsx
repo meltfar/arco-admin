@@ -133,7 +133,7 @@ const InsertForm: React.FC = () => {
               </Form.Item>
 
               {currentTarget === 'exportByHttp' && (
-                <Form.Item label="导出配置" field="exportOptions">
+                <Form.Item label="导出配置">
                   <HttpExportOptions />
                 </Form.Item>
               )}
