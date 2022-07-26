@@ -36,13 +36,13 @@ const initialState: GlobalState = {
   },
 };
 
-export const fetchUserInfo = createAsyncThunk<
-  GlobalState['userInfo'],
-  number
->('users/fetchUserInfo', async (params, thunkApi) => {
-  const resp = await axios.get('/api/user/userInfo');
-  return resp.data;
-});
+export const fetchUserInfo = createAsyncThunk<GlobalState['userInfo'], number>(
+  'users/fetchUserInfo',
+  async (params, thunkApi) => {
+    const resp = await axios.get('/api/user/userInfo');
+    return resp.data;
+  }
+);
 
 export const settingSlice = createSlice({
   name: 'setting',

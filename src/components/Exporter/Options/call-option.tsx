@@ -4,13 +4,13 @@ import React from 'react';
 export const CallApiOptionComponent: React.FC = () => {
   return (
     <>
-      <Form.Item label="URL" field={'url'} required>
+      <Form.Item label="URL" field={'extOptions.url'} required>
         <Input />
       </Form.Item>
-      <Form.Item label="内容格式" field={'contentType'}>
+      <Form.Item label="内容格式" field={'extOptions.contentType'}>
         <Input placeholder="application/json" />
       </Form.Item>
-      <Form.Item label="请求方法" field={'method'} required>
+      <Form.Item label="请求方法" field={'extOptions.method'} required>
         <Select defaultValue={'post'}>
           <Select.Option key="post" value="post">
             POST
@@ -23,8 +23,8 @@ export const CallApiOptionComponent: React.FC = () => {
           </Select.Option>
         </Select>
       </Form.Item>
-      <Form.Item label="请求体" field={'exportDataTemplate'}>
-        <Input.TextArea />
+      <Form.Item label="请求体" field={'extOptions.exportDataTemplate'}>
+        <Input.TextArea autoSize={{ minRows: 8 }} />
       </Form.Item>
     </>
   );

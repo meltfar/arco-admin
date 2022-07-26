@@ -42,11 +42,17 @@ const InsertForm: React.FC = () => {
     setLoading(true);
     const ac = new AbortController();
     axios
-      .get('/api/source/list', { signal: ac.signal })
+      .post(
+        '/aiops-api/dataSource/search.json',
+        { pageNo: 1, search: '', max: 999999, offset: 0 },
+        { signal: ac.signal }
+      )
       .then((resp) => {
-        setDataSourceList(resp.data);
+        setDataSourceList(resp.data.list);
       })
-      .catch()
+      .catch((reason) => {
+        console.log(reason);
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -63,7 +69,7 @@ const InsertForm: React.FC = () => {
             <Form
               form={form}
               onSubmit={(values) => {
-                console.log(values);
+                console.log('commit: ', values);
               }}
             >
               <Form.Item label="选择采集源" field={'dataSourceId'} required>
@@ -127,7 +133,7 @@ const InsertForm: React.FC = () => {
               </Form.Item>
 
               {currentTarget === 'exportByHttp' && (
-                <Form.Item label="导出配置" field="exportOptions" required>
+                <Form.Item label="导出配置" field="exportOptions">
                   <HttpExportOptions />
                 </Form.Item>
               )}

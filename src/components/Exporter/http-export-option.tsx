@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Divider, Input, Radio } from '@arco-design/web-react';
+import { Divider, Form, Input, Radio } from '@arco-design/web-react';
 import { EmailOptionComponent } from './Options/email-option';
 import { CallApiOptionComponent } from './Options/call-option';
 
@@ -49,11 +49,13 @@ const HttpExportOptions: React.FC<{
         </span>
         <Divider />
         {currentExporter === 'custom' && (
-          <Input.TextArea
-            value={props.value}
-            onChange={props.onChange}
-            autoSize={{ minRows: 8 }}
-          />
+          <Form.Item field={'extOptions'}>
+            <Input.TextArea
+              // value={props.value}
+              // onChange={props.onChange}
+              autoSize={{ minRows: 8 }}
+            />
+          </Form.Item>
         )}
         {currentExporter === 'sendEmail' && <EmailOptionComponent />}
         {currentExporter === 'invokeApi' && <CallApiOptionComponent />}

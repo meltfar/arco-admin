@@ -24,8 +24,9 @@ import getUrlParams from '@/utils/getUrlParams';
 import styles from '@/style/layout.module.less';
 import NoAccess from '@/pages/exception/403';
 import { useAppDispatch, useAppSelector } from '@/store';
-import checkLogin from '@/utils/checkLogin';
+import checkLogin, { authHeaderName } from '@/utils/checkLogin';
 import { fetchUserInfo } from '@/store/setting';
+import axios from 'axios';
 
 const MenuItem = Menu.Item;
 const SubMenu = Menu.SubMenu;
@@ -165,6 +166,24 @@ function PageLayout({ children }: { children: ReactNode }) {
       window.location.pathname = '/login';
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    const darkThemeMq = window.matchMedia('(prefers-color-scheme: dark)');
+    darkThemeMq.addListener((e) => {
+      if (e.matches) {
+        document.body.setAttribute('arco-theme', 'dark');
+      } else {
+        document.body.removeAttribute('arco-theme');
+      }
+    });
+
+    axios.interceptors.request.use((value) => {
+      const newHeaders = { ...value.headers };
+      newHeaders[authHeaderName] = localStorage.getItem(authHeaderName) || '';
+      value.headers = newHeaders;
+      return value;
+    });
+  }, []);
 
   return (
     <Layout className={styles.layout}>

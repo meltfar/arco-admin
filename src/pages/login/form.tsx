@@ -14,6 +14,7 @@ import useStorage from '@/utils/useStorage';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
+import { authHeaderName } from '@/utils/checkLogin';
 
 export default function LoginForm() {
   const formRef = useRef<FormInstance>();
@@ -26,7 +27,7 @@ export default function LoginForm() {
 
   const [rememberPassword, setRememberPassword] = useState(!!loginParams);
 
-  function afterLoginSuccess(params) {
+  function afterLoginSuccess(params: unknown, authCode: string) {
     // 记住密码
     if (rememberPassword) {
       setLoginParams(JSON.stringify(params));
@@ -34,23 +35,32 @@ export default function LoginForm() {
       removeLoginParams();
     }
     // 记录登录状态
-    localStorage.setItem('userStatus', 'login');
+    // localStorage.setItem('userStatus', 'login');
+    localStorage.setItem(authHeaderName, authCode);
     // 跳转首页
     window.location.href = '/';
   }
 
-  function login(params) {
+  function login(params: unknown) {
     setErrorMessage('');
     setLoading(true);
     axios
-      .post('/api/user/login', params)
+      .post('/aiops-api/user/login', params)
       .then((res) => {
-        const { status, msg } = res.data;
-        if (status === 'ok') {
-          afterLoginSuccess(params);
+        // const { status, msg } = res.data;
+        // if (status === 'ok') {
+        //   afterLoginSuccess(params);
+        // } else {
+        //   setErrorMessage(msg || t['login.form.login.errMsg']);
+        // }
+        if (res.data.authCode) {
+          afterLoginSuccess(params, res.data.authCode);
         } else {
-          setErrorMessage(msg || t['login.form.login.errMsg']);
+          setErrorMessage(t['login.form.login.errMsg']);
         }
+      })
+      .catch((reason) => {
+        setErrorMessage(JSON.stringify(reason));
       })
       .finally(() => {
         setLoading(false);
@@ -87,7 +97,7 @@ export default function LoginForm() {
         initialValues={{ userName: 'admin', password: 'admin' }}
       >
         <Form.Item
-          field="userName"
+          field="username"
           rules={[{ required: true, message: t['login.form.userName.errMsg'] }]}
         >
           <Input

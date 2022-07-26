@@ -9,7 +9,7 @@ export interface ExportDataSource {
   id: number;
   extLabels?: string; // json || nothing
   query: string; // SQL or ES
-  intervalMinute: string; // minutes
+  intervalMinutes: string; // minutes
   name: string;
   lastQueryTime: string; // time
   dataSourceId: number; // -> DataSourceConfig.id

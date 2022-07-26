@@ -47,6 +47,10 @@ module.exports = withLess(
           source: '/api/:path*',
           destination: 'http://192.168.150.73:8088/api/:path*',
         },
+        {
+          source: '/aiops-api/:path*',
+          destination: 'https://app.c.vip.migu.cn/aiops-api/:path*'
+        }
       ];
     },
     pageExtensions: ['tsx'],

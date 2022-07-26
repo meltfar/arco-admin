@@ -29,7 +29,6 @@ const SearchTable: React.FC = () => {
   //   console.log(record, type);
   // };
 
-  // const columns = useMemo(() => getColumns(t, tableCallback), [t]);
   const columns: ColumnProps<ExportDataSource>[] = useMemo(
     () => [
       { key: 'id', dataIndex: 'id', title: 'ID', align: 'center', width: 70 },

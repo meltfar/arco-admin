@@ -2,7 +2,7 @@ const i18n = {
   'en-US': {
     'menu.welcome': 'Welcome',
     'menu.dashboard': 'Dashboard',
-    'menu.list': 'List',
+    'menu.list': 'Monitor capture plan management',
     'menu.result': 'Result',
     'menu.exception': 'Exception',
     'menu.form': 'Form',
@@ -61,7 +61,7 @@ const i18n = {
   },
   'zh-CN': {
     'menu.dashboard': '仪表盘',
-    'menu.list': '列表页',
+    'menu.list': '监控采集管理',
     'menu.result': '结果页',
     'menu.exception': '异常页',
     'menu.form': '表单页',
@@ -78,7 +78,7 @@ const i18n = {
     'menu.form.group': '分组表单',
     'menu.dashboard.monitor': '实时监控',
     'menu.visualization.multiDimensionDataAnalysis': '多维数据分析',
-    'menu.list.searchTable': '查询表格',
+    'menu.list.searchTable': '采集列表',
     'menu.list.insertForm': '新增采集',
     'menu.form.step': '分步表单',
     'menu.result.success': '成功页',

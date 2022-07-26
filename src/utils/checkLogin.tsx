@@ -1,3 +1,6 @@
 export default function checkLogin() {
-  return localStorage.getItem('userStatus') === 'login';
+  return !!localStorage.getItem(authHeaderName);
 }
+
+export const authHeaderName = 'AIOps-Api-Auth';
+
