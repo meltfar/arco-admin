@@ -13,10 +13,10 @@ const emailReg =
 export const EmailOptionComponent: React.FC = () => {
   return (
     <>
-      <Form.Item label="邮件标题" field={'extOptions.title'} required>
+      <Form.Item label="邮件标题" field={'exportOptions.title'} required>
         <Input />
       </Form.Item>
-      <Form.Item field={'extOptions.to'} label="邮箱地址">
+      <Form.Item field={'exportOptions.to'} label="邮箱地址">
         <InputTag
           allowClear
           placeholder="回车确认，可以输入多个"
@@ -25,26 +25,26 @@ export const EmailOptionComponent: React.FC = () => {
           }}
         />
       </Form.Item>
-      <Form.Item label="系统名" field={'extOptions.system'}>
+      <Form.Item label="系统名" field={'exportOptions.system'}>
         <Input />
       </Form.Item>
-      <Form.Item label="用户组" field={'extOptions.userGroup'}>
+      <Form.Item label="用户组" field={'exportOptions.userGroup'}>
         <Input />
       </Form.Item>
-      <Form.Item label="包含管理员" field={'extOptions.containsManager'}>
+      <Form.Item label="包含管理员" field={'exportOptions.containsManager'}>
         <Switch />
       </Form.Item>
-      <Form.Item label="最小可接受条目" field={'extOptions.minCount'}>
+      <Form.Item label="最小可接受条目" field={'exportOptions.minCount'}>
         <InputNumber />
       </Form.Item>
-      <Form.Item label="条件" field={'extOptions.condition'}>
+      <Form.Item label="条件" field={'exportOptions.condition'}>
         <Input />
       </Form.Item>
-      <Form.Item label="仅允许非空结果" field={'extOptions.notAllowEmpty'}>
+      <Form.Item label="仅允许非空结果" field={'exportOptions.notAllowEmpty'}>
         <Switch />
       </Form.Item>
       {/* <Form.Item hidden field={'isHtml'} defaultValue={'true'} /> */}
-      <Form.Item label="邮件内容" field={'extOptions.content'}>
+      <Form.Item label="邮件内容" field={'exportOptions.content'}>
         <Input.TextArea autoSize={{ minRows: 8 }} />
       </Form.Item>
     </>

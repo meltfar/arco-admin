@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Divider, Form, Input, Radio } from '@arco-design/web-react';
 import { EmailOptionComponent } from './Options/email-option';
 import { CallApiOptionComponent } from './Options/call-option';
 
 const HttpExportOptions: React.FC<{
-  value?: string;
-  onChange?: (value: string) => void;
+  currentExporter: 'custom' | 'sendEmail' | 'sendSms' | 'invokeApi';
+  setCurrentExporter: (
+    ac: 'custom' | 'sendEmail' | 'sendSms' | 'invokeApi'
+  ) => void;
   //   type: string;
-}> = (props) => {
-  const [currentExporter, setCurrentExporter] = useState<
-    'custom' | 'sendEmail' | 'sendSms' | 'invokeApi'
-  >('custom');
+}> = ({ currentExporter, setCurrentExporter }) => {
+  // const [currentExporter, setCurrentExporter] = useState<
+  //   'custom' | 'sendEmail' | 'sendSms' | 'invokeApi'
+  // >('custom');
   return (
     <>
       <div
@@ -35,7 +37,7 @@ const HttpExportOptions: React.FC<{
           <Radio.Group
             size="large"
             type="button"
-            defaultValue={'custom'}
+            value={currentExporter}
             options={[
               { value: 'custom', label: '自定义' },
               { value: 'sendEmail', label: '发送邮件' },
@@ -49,7 +51,7 @@ const HttpExportOptions: React.FC<{
         </span>
         <Divider />
         {currentExporter === 'custom' && (
-          <Form.Item field={'extOptions'}>
+          <Form.Item field={'exportOptions'}>
             <Input.TextArea
               // value={props.value}
               // onChange={props.onChange}

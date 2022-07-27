@@ -6,8 +6,8 @@ import {
   Button,
   Space,
   Typography,
-  Popover,
   Tag,
+  Modal,
 } from '@arco-design/web-react';
 import PermissionWrapper from '@/components/PermissionWrapper';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
@@ -21,6 +21,17 @@ import { ExportDataSource } from '@/services/export_data';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 
 const { Title } = Typography;
+
+const getForceCluster = (col: string) => {
+  if (!col) {
+    return '';
+  }
+  let tag = '';
+  try {
+    tag = (JSON.parse(col) as { forceCluster: string }).forceCluster;
+  } catch (e) {}
+  return tag;
+};
 
 const SearchTable: React.FC = () => {
   const t = useLocale(locale);
@@ -38,49 +49,39 @@ const SearchTable: React.FC = () => {
         key: 'query',
         dataIndex: 'query',
         align: 'center',
-        render: (col) => (
-          <Popover
-            trigger={'click'}
-            style={{ minWidth: '40vw' }}
-            title={
-              col.substring(0, 6).toUpperCase() === 'SELECT'
-                ? 'SQL'
-                : 'ELASTICSEARCH'
-            }
-            content={
+        render: (col, ent) => {
+          const isSql = col.substring(0, 6).toUpperCase() === 'SELECT';
+          const clusterName = getForceCluster(ent.extLabels);
+
+          const popoverContent = (
+            <>
+              {!isSql && clusterName && (
+                <div>
+                  强制集群： <Tag>{clusterName}</Tag>
+                </div>
+              )}
               <span>
-                <SyntaxHighlighter
-                  language={col.startsWith('SELECT') ? 'sql' : 'json'}
-                >
+                <SyntaxHighlighter language={isSql ? 'sql' : 'json'}>
                   {col}
                 </SyntaxHighlighter>
               </span>
-            }
-          >
-            <Button type="text">查看请求</Button>
-          </Popover>
-        ),
+            </>
+          );
+          return (
+            <Button
+              type="text"
+              onClick={() => {
+                Modal.info({
+                  content: popoverContent,
+                  title: isSql ? 'SQL' : 'ELASTICSEARCH',
+                });
+              }}
+            >
+              查看{isSql ? 'SQL' : 'ES'}请求
+            </Button>
+          );
+        },
       },
-      // {
-      //   key: 'extLabels',
-      //   title: 'ES集群标签',
-      //   dataIndex: 'extLabels',
-      //   align: 'center',
-      //   render(col) {
-      //     if (!col) {
-      //       return '';
-      //     }
-      //     let tag = '';
-      //     try {
-      //       tag = (JSON.parse(col) as { forceCluster: string }).forceCluster;
-      //     } catch (e) {}
-      //     return (
-      //       <>
-      //         <Tag>{tag}</Tag>
-      //       </>
-      //     );
-      //   },
-      // },
       {
         key: 'intervalMinutes',
         title: '间隔时间(分钟)',
@@ -124,19 +125,44 @@ const SearchTable: React.FC = () => {
           if (!col || col === '{}') {
             return '';
           }
+          const popoverContent = (
+            <span>
+              <SyntaxHighlighter language={'json'}>{col}</SyntaxHighlighter>
+            </span>
+          );
           return (
-            <Popover
-              trigger={'click'}
-              title={''}
-              style={{ minWidth: '45vw' }}
-              content={
-                <span>
-                  <SyntaxHighlighter language={'json'}>{col}</SyntaxHighlighter>
-                </span>
-              }
+            <Button
+              type="text"
+              onClick={() => {
+                Modal.info({ content: popoverContent, title: '导出配置' });
+              }}
             >
-              <Button type="text">查看导出配置</Button>
-            </Popover>
+              查看导出配置
+            </Button>
+          );
+        },
+      },
+      {
+        key: 'action',
+        title: '操作',
+        width: 160,
+        render: (_, entity) => {
+          return (
+            <>
+              <div
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <Button key={`edit-${entity.id}`}>编辑</Button>
+                <Button key={`remove-${entity.id}`} status="danger">
+                  删除
+                </Button>
+              </div>
+            </>
           );
         },
       },

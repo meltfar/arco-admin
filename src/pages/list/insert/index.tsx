@@ -6,11 +6,13 @@ import {
   Form,
   Input,
   InputNumber,
+  Message,
   Select,
   Tag,
   Typography,
 } from '@arco-design/web-react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import styles from './style/index.module.less';
 
@@ -29,6 +31,22 @@ const getTagColor: (tagName: DataSourceConfig['type']) => string = (
   }
 };
 
+const parseEmailOption: (content: {
+  contentType: string;
+  exportDataTemplate: string[];
+  method: string;
+  minCount: number;
+  notAllowEmpty: boolean;
+  url: string;
+}) => Record<string, unknown> = (content) => {
+  console.log(content);
+  const optionTemplate = content.exportDataTemplate.join("");
+  const sp = new URLSearchParams(optionTemplate);
+  console.log(sp);
+  console.log(optionTemplate);
+  return content;
+};
+
 const InsertForm: React.FC = () => {
   const [dataSourceList, setDataSourceList] = useState<DataSourceConfig[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,6 +55,68 @@ const InsertForm: React.FC = () => {
   const [currentTarget, setCurrentTarget] = useState<'exportByHttp' | 'none'>(
     'none'
   );
+  const router = useRouter();
+  const [currentExporter, setCurrentExporter] = useState<
+    'custom' | 'sendEmail' | 'sendSms' | 'invokeApi'
+  >('custom');
+
+  useEffect(() => {
+    const ac = new AbortController();
+
+    const { mode = 'add', id = -1 } = router.query;
+    if (mode !== 'add' && id < 0) {
+      Message.error('页面参数有误！');
+      router.back();
+      return;
+    }
+
+    if (mode !== 'add') {
+      setLoading(true);
+      axios
+        .get(`/api/export/query?id=${id}`, { signal: ac.signal })
+        .then((resp) => {
+          setLoading(false);
+          const data = resp.data;
+          if (data.target) {
+            setCurrentTarget(
+              data.target === 'exportByHttp' ? 'exportByHttp' : 'none'
+            );
+          }
+          if (data.exportOptions) {
+            try {
+              data.exportOptions = JSON.parse(data.exportOptions);
+              if (data.exportOptions.url) {
+                if (data.exportOptions.url.includes('email/send.json')) {
+                  setCurrentExporter('sendEmail');
+                  // data.exportOptions = parseEmailOption(data.exportOptions);
+                  data.exportOptions = {
+                    ...data.exportOptions,
+                    ...parseEmailOption(data.exportOptions),
+                  };
+                } else if (data.exportOptions.url.includes('sms/send.json')) {
+                  setCurrentExporter('sendSms');
+                } else {
+                  setCurrentExporter('invokeApi');
+                }
+              } else {
+                setCurrentExporter('custom');
+              }
+            } catch (_e) {
+              console.error(_e);
+            }
+          }
+          form.setFieldsValue(data);
+          console.log(data);
+        })
+        .catch((reason) => {
+          console.log(reason);
+          if (!reason.message || reason.message !== 'canceled') {
+            setLoading(false);
+          }
+        });
+    }
+    return () => ac.abort();
+  }, [form, router, router.query]);
 
   useEffect(() => {
     setLoading(true);
@@ -49,12 +129,13 @@ const InsertForm: React.FC = () => {
       )
       .then((resp) => {
         setDataSourceList(resp.data.list);
+        setLoading(false);
       })
       .catch((reason) => {
         console.log(reason);
-      })
-      .finally(() => {
-        setLoading(false);
+        if (!reason.message || reason.message !== 'canceled') {
+          setLoading(false);
+        }
       });
 
     return () => ac.abort();
@@ -105,7 +186,7 @@ const InsertForm: React.FC = () => {
                 <Input.TextArea autoSize={{ minRows: 8 }} />
               </Form.Item>
 
-              <Form.Item label="间隔时间" field="intervalMinutes" required>
+              <Form.Item label="间隔时间" field="intervalMinute" required>
                 <InputNumber placeholder="单位： 分钟" />
               </Form.Item>
 
@@ -134,7 +215,12 @@ const InsertForm: React.FC = () => {
 
               {currentTarget === 'exportByHttp' && (
                 <Form.Item label="导出配置">
-                  <HttpExportOptions />
+                  <HttpExportOptions
+                    currentExporter={currentExporter}
+                    setCurrentExporter={(ac) => {
+                      setCurrentExporter(ac);
+                    }}
+                  />
                 </Form.Item>
               )}
 
