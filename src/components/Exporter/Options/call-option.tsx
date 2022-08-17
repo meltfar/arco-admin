@@ -21,6 +21,12 @@ export const CallApiOptionComponent: React.FC = () => {
           <Select.Option key="head" value="head">
             HEAD
           </Select.Option>
+          <Select.Option key="put" value="put">
+            PUT
+          </Select.Option>
+          <Select.Option key="delete" value="delete">
+            DELETE
+          </Select.Option>
         </Select>
       </Form.Item>
       <Form.Item label="请求体" field={'exportOptions.exportDataTemplate'}>

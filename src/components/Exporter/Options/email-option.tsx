@@ -3,6 +3,7 @@ import {
   Input,
   InputNumber,
   InputTag,
+  Select,
   Switch,
 } from '@arco-design/web-react';
 import React from 'react';
@@ -29,7 +30,17 @@ export const EmailOptionComponent: React.FC = () => {
         <Input />
       </Form.Item>
       <Form.Item label="用户组" field={'exportOptions.userGroup'}>
-        <Input />
+        <Select>
+          <Select.Option key="ops" value={'ops'}>
+            运维
+          </Select.Option>
+          <Select.Option key="developer" value={'developer'}>
+            开发
+          </Select.Option>
+          <Select.Option key="all" value={'all'}>
+            所有人
+          </Select.Option>
+        </Select>
       </Form.Item>
       <Form.Item label="包含管理员" field={'exportOptions.containsManager'}>
         <Switch />
