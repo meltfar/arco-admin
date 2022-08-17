@@ -13,7 +13,7 @@ import {
 } from '@arco-design/web-react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './style/index.module.less';
 
 const getTagColor: (tagName: DataSourceConfig['type']) => string = (
@@ -40,7 +40,7 @@ const parseEmailOption: (content: {
   url: string;
 }) => Record<string, unknown> = (content) => {
   console.log(content);
-  const optionTemplate = content.exportDataTemplate.join("");
+  const optionTemplate = content.exportDataTemplate.join('');
   const sp = new URLSearchParams(optionTemplate);
   console.log(sp);
   console.log(optionTemplate);
@@ -118,6 +118,66 @@ const InsertForm: React.FC = () => {
     return () => ac.abort();
   }, [form, router, router.query]);
 
+  const handleSubmit = useCallback(
+    async (values: Record<string, unknown>) => {
+      console.log(values);
+
+      const content = { ...values };
+      if (values.target === 'none') {
+        content.target = '';
+      }
+      if (values.forceCluster) {
+        content.extLabels = { forceCluster: values.forceCluster };
+      }
+      if (values.exportOptions) {
+        const eo: Record<string, unknown> = {
+          ...(values.exportOptions as object),
+        };
+        switch (currentExporter) {
+          case 'sendEmail': {
+            eo.url = 'http://localhost:8080/aiops-api/email/send.json';
+            eo.contentType = 'application/x-www-form-urlencoded';
+            eo.method = 'post';
+
+            const formData = new FormData();
+            formData.append('system', (eo.system as string) ?? '');
+            (eo.to as string[]).forEach((v) => {
+              formData.append('to', v);
+            });
+            formData.append('userGroup', eo.userGroup as string);
+            formData.append(
+              'containsManager',
+              `${eo.containesManager ? 'true' : 'false'}`
+            );
+            formData.append('title', eo.title as string);
+            formData.append('isHtml', 'true');
+            formData.append('content', eo.content as string);
+            eo.exportDataTemplate = [
+              new URLSearchParams(formData as unknown as any).toString(),
+            ];
+            break;
+          }
+          case 'sendSms': {
+            eo.url = 'http://localhost:8080/aiops-api/sms/send.json';
+            eo.contentType = 'application/x-www-form-urlencoded';
+            eo.method = 'post';
+            eo.exportDataTemplate = [eo.exportDataTemplate];
+            break;
+          }
+          default: {
+            if (!eo.contentType) {
+              eo.contentType = 'application/json';
+            }
+          }
+        }
+        content.exportOptions = eo;
+      }
+
+      console.log('after converted: ', content);
+    },
+    [currentExporter]
+  );
+
   useEffect(() => {
     setLoading(true);
     const ac = new AbortController();
@@ -147,12 +207,7 @@ const InsertForm: React.FC = () => {
         <Card style={{ borderRadius: '12px' }}>
           <Typography.Title>新增采集</Typography.Title>
           <div className={styles.wrapper}>
-            <Form
-              form={form}
-              onSubmit={(values) => {
-                console.log('commit: ', values);
-              }}
-            >
+            <Form form={form} onSubmit={handleSubmit}>
               <Form.Item label="选择采集源" field={'dataSourceId'} required>
                 <Select
                   loading={loading}

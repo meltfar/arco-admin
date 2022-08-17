@@ -53,6 +53,7 @@ module.exports = withLess(
         }
       ];
     },
+    output: 'standalone',
     pageExtensions: ['tsx'],
   })
 );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import groupBy from 'lodash/groupBy';
 import {
   Trigger,
@@ -8,6 +8,7 @@ import {
   Avatar,
   Spin,
   Button,
+  Message,
 } from '@arco-design/web-react';
 import {
   IconMessage,
@@ -34,7 +35,13 @@ function DropContent() {
       .then((res) => {
         setSourceData(res.data);
       })
-      .catch()
+      .catch((e: Error | AxiosError) => {
+        if (axios.isAxiosError(e)) {
+          Message.error(`${(e as AxiosError).message}`);
+        } else {
+          console.log(e);
+        }
+      })
       .finally(() => {
         showLoading && setLoading(false);
       });
@@ -101,7 +108,7 @@ function DropContent() {
           }
         >
           {tabList.map((item) => {
-            const { key, title, avatar } = item;
+            const { key, title } = item;
             const data = groupData[key] || [];
             const unReadData = data.filter((item) => !item.status);
             return (

@@ -183,6 +183,17 @@ function PageLayout({ children }: { children: ReactNode }) {
       value.headers = newHeaders;
       return value;
     });
+    // axios.interceptors.response.use(undefined, (error) => {
+    //   if (
+    //     axios.isAxiosError(error) &&
+    //     error.response?.data?.errorCode === 401
+    //   ) {
+    //     if (window.location.pathname.replace(/\//g, '') !== 'login') {
+    //       window.location.pathname = '/login';
+    //     }
+    //   }
+    //   return error;
+    // });
   }, []);
 
   return (
