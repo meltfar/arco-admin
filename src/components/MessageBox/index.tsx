@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
+import axios from 'axios';
 import groupBy from 'lodash/groupBy';
 import {
   Trigger,
@@ -17,7 +18,8 @@ import {
   IconDesktop,
 } from '@arco-design/web-react/icon';
 import useLocale from '../../utils/useLocale';
-import MessageList, { MessageListType } from './list';
+import type { MessageListType } from './list';
+import MessageList from './list';
 import styles from './style/index.module.less';
 
 function DropContent() {

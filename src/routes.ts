@@ -1,4 +1,5 @@
-import auth, { AuthParams, UserPermission } from '@/utils/authentication';
+import type { AuthParams, UserPermission } from '@/utils/authentication';
+import auth from '@/utils/authentication';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type IRoute = AuthParams & {

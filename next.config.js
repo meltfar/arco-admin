@@ -9,7 +9,7 @@ const withTM = require('next-transpile-modules')([
 
 const setting = require('./src/settings.json');
 
-module.exports = withLess(
+const exportConfig = withLess(
   withTM({
     lessLoaderOptions: {
       lessOptions: {
@@ -49,11 +49,13 @@ module.exports = withLess(
         },
         {
           source: '/aiops-api/:path*',
-          destination: 'https://app.c.vip.migu.cn/aiops-api/:path*'
-        }
+          destination: 'https://app.c.vip.migu.cn/aiops-api/:path*',
+        },
       ];
     },
     output: 'standalone',
     pageExtensions: ['tsx'],
   })
 );
+console.log('export: ', exportConfig);
+module.exports = exportConfig;

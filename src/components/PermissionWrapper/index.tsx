@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import authentication, { AuthParams } from '@/utils/authentication';
+import type { AuthParams } from '@/utils/authentication';
+import authentication from '@/utils/authentication';
 import { useAppSelector } from '@/store';
 
 type PermissionWrapperProps = AuthParams & {
@@ -14,10 +15,10 @@ const PermissionWrapper = (
 
   const hasPermission = useMemo(() => {
     return authentication(
-        {requiredPermissions, oneOfPerm},
-        userInfo.permissions
+      { requiredPermissions, oneOfPerm },
+      userInfo.permissions
     );
-  },[oneOfPerm, requiredPermissions, userInfo.permissions]);
+  }, [oneOfPerm, requiredPermissions, userInfo.permissions]);
 
   if (hasPermission) {
     return <>{convertReactElement(props.children)}</>;

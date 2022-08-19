@@ -6,7 +6,7 @@ import locale from './locale';
 import styles from './style/index.module.less';
 import CardBlock from './card-block';
 import AddCard from './card-add';
-import { QualityInspection, BasicCard } from './interface';
+import type { QualityInspection, BasicCard } from './interface';
 import './mock';
 
 const { Title } = Typography;

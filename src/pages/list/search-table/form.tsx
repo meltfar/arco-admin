@@ -1,17 +1,8 @@
 import React from 'react';
-import dayjs from 'dayjs';
-import {
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  Button,
-  Grid,
-} from '@arco-design/web-react';
+import { Form, Input, Select, Button, Grid } from '@arco-design/web-react';
 import locale from './locale';
 import useLocale from '@/utils/useLocale';
 import { IconRefresh, IconSearch } from '@arco-design/web-react/icon';
-import { ContentType, FilterType, Status } from './constants';
 import styles from './style/index.module.less';
 
 const { Row, Col } = Grid;
@@ -54,68 +45,20 @@ function SearchForm(props: {
             </Form.Item>
           </Col>
           <Col span={colSpan}>
-            <Form.Item label={t['searchTable.columns.name']} field="name">
-              <Input
-                allowClear
-                placeholder={t['searchForm.name.placeholder']}
-              />
+            <Form.Item label="查询名" field="search">
+              <Input allowClear placeholder={'查询名'} />
             </Form.Item>
           </Col>
           <Col span={colSpan}>
-            <Form.Item
-              label={t['searchTable.columns.contentType']}
-              field="contentType"
-            >
-              <Select
-                placeholder={t['searchForm.all.placeholder']}
-                options={ContentType.map((item, index) => ({
-                  label: item,
-                  value: index,
-                }))}
-                mode="multiple"
-                allowClear
-              />
-            </Form.Item>
-          </Col>
-          <Col span={colSpan}>
-            <Form.Item
-              label={t['searchTable.columns.filterType']}
-              field="filterType"
-            >
-              <Select
-                placeholder={t['searchForm.all.placeholder']}
-                options={FilterType.map((item, index) => ({
-                  label: item,
-                  value: index,
-                }))}
-                mode="multiple"
-                allowClear
-              />
-            </Form.Item>
-          </Col>
-          <Col span={colSpan}>
-            <Form.Item
-              label={t['searchTable.columns.createdTime']}
-              field="createdTime"
-            >
-              <DatePicker.RangePicker
-                allowClear
-                style={{ width: '100%' }}
-                disabledDate={(date) => dayjs(date).isAfter(dayjs())}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={colSpan}>
-            <Form.Item label={t['searchTable.columns.status']} field="status">
-              <Select
-                placeholder={t['searchForm.all.placeholder']}
-                options={Status.map((item, index) => ({
-                  label: item,
-                  value: index,
-                }))}
-                mode="multiple"
-                allowClear
-              />
+            <Form.Item label={'目标'} field="target">
+              <Select placeholder={'目标'} allowClear>
+                <Select.Option key="none" value="">
+                  通过ES(默认)
+                </Select.Option>
+                <Select.Option key="http" value="exportByHttp">
+                  通过调用HTTP
+                </Select.Option>
+              </Select>
             </Form.Item>
           </Col>
         </Row>

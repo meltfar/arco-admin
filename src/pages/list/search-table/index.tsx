@@ -1,23 +1,25 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import type { PaginationProps } from '@arco-design/web-react';
 import {
   Table,
   Card,
-  PaginationProps,
   Button,
   Space,
   Typography,
   Tag,
   Modal,
+  Message,
 } from '@arco-design/web-react';
 import PermissionWrapper from '@/components/PermissionWrapper';
 import { IconDownload, IconPlus } from '@arco-design/web-react/icon';
+import type { AxiosError } from 'axios';
 import axios from 'axios';
 import useLocale from '@/utils/useLocale';
 import SearchForm from './form';
 import locale from './locale';
 import styles from './style/index.module.less';
-import { ColumnProps } from '@arco-design/web-react/es/Table';
-import { ExportDataSource } from '@/services/export_data';
+import type { ColumnProps } from '@arco-design/web-react/es/Table';
+import type { ExportDataSource } from '@/services/export_data';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 
 const { Title } = Typography;
@@ -187,10 +189,10 @@ const SearchTable: React.FC = () => {
     const { current, pageSize } = pagination;
     setLoading(true);
     axios
-      .get('/api/list', {
-        params: {
-          page: current,
-          pageSize,
+      .post('/aiops-api/exportDataSource/list', {
+        data: {
+          offset: (current - 1) * pageSize,
+          max: pageSize,
           ...formParams,
         },
         signal: ac.signal,
@@ -199,7 +201,15 @@ const SearchTable: React.FC = () => {
         setData(res.data.list);
         setTotal(res.data.total);
       })
-      .catch()
+      .catch((err: Error | AxiosError) => {
+        if (axios.isAxiosError(err)) {
+          Message.error({
+            content: JSON.stringify((err as AxiosError).response.data),
+          });
+        } else {
+          console.error(err.message);
+        }
+      })
       .finally(() => {
         setLoading(false);
       });

@@ -1,4 +1,5 @@
-import React, { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import React from 'react';
 import { Typography } from '@arco-design/web-react';
 import cs from 'classnames';
 import styles from './style/index.module.less';

@@ -1,5 +1,5 @@
 import HttpExportOptions from '@/components/Exporter/http-export-option';
-import { DataSourceConfig } from '@/services/export_data';
+import type { DataSourceConfig } from '@/services/export_data';
 import {
   Button,
   Card,
@@ -73,7 +73,9 @@ const InsertForm: React.FC = () => {
     if (mode !== 'add') {
       setLoading(true);
       axios
-        .get(`/api/export/query?id=${id}`, { signal: ac.signal })
+        .get(`/aiops-api/exportDataSource/detail?id=${id}`, {
+          signal: ac.signal,
+        })
         .then((resp) => {
           setLoading(false);
           const data = resp.data;
@@ -121,6 +123,7 @@ const InsertForm: React.FC = () => {
   const handleSubmit = useCallback(
     async (values: Record<string, unknown>) => {
       console.log(values);
+      setLoading(true);
 
       const content = { ...values };
       if (values.target === 'none') {
@@ -174,6 +177,24 @@ const InsertForm: React.FC = () => {
       }
 
       console.log('after converted: ', content);
+      try {
+        const resp = await axios.post('/aiops-api/exportDataSource/save', {
+          data: content,
+        });
+        if (!resp.data.error) {
+          console.log('insert result', resp.data);
+          Message.success({ content: resp.data.result });
+        }
+      } catch (e: unknown) {
+        if (axios.isAxiosError(e)) {
+          Message.error({ content: JSON.stringify(e.response.data) });
+        } else {
+          console.error(e);
+          Message.error({ content: `未知错误：${e}` });
+        }
+      } finally {
+        setLoading(false);
+      }
     },
     [currentExporter]
   );

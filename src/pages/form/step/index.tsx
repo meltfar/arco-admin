@@ -41,6 +41,8 @@ function StepForm() {
       setCurrent(current + 1);
     } catch (_) {}
   };
+
+  const AnyPicker = DatePicker.RangePicker as any;
   return (
     <div className={styles.container}>
       <Card>
@@ -114,7 +116,7 @@ function StepForm() {
                     },
                   ]}
                 >
-                  <DatePicker.RangePicker style={{ width: '100%' }} />
+                  <AnyPicker style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item
                   label={t['stepForm.basicInfo.link']}

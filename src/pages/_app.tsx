@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
-import cookies from 'next-cookies';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
@@ -24,11 +23,10 @@ interface RenderConfig {
 export default function MyApp({
   pageProps,
   Component,
-  renderConfig,
 }: AppProps & { renderConfig: RenderConfig }) {
-  const { arcoLang, arcoTheme } = renderConfig;
-  const [lang, setLang] = useStorage('arco-lang', arcoLang || 'zh-CN');
-  const [theme, setTheme] = useStorage('arco-theme', arcoTheme || 'light');
+  // const { arcoLang = 'zh-CN', arcoTheme = 'light' } = renderConfig;
+  const [lang, setLang] = useStorage('arco-lang', 'zh-CN');
+  const [theme, setTheme] = useStorage('arco-theme', 'light');
   const router = useRouter();
 
   const locale = useMemo(() => {
@@ -69,6 +67,8 @@ export default function MyApp({
     changeTheme(theme);
   }, [lang, theme]);
 
+  const AnyComponent = Component as any;
+
   return (
     <>
       <Head>
@@ -102,10 +102,10 @@ export default function MyApp({
             }}
           >
             {Component.displayName === 'LoginPage' ? (
-              <Component {...pageProps} suppressHydrationWarning />
+              <AnyComponent {...pageProps} suppressHydrationWarning />
             ) : (
               <Layout>
-                <Component {...pageProps} suppressHydrationWarning />
+                <AnyComponent {...pageProps} suppressHydrationWarning />
               </Layout>
             )}
           </GlobalContext.Provider>
@@ -116,13 +116,13 @@ export default function MyApp({
 }
 
 // fix: next build ssr can't attach the localstorage
-MyApp.getInitialProps = async (appContext) => {
-  const { ctx } = appContext;
-  const serverCookies = cookies(ctx);
-  return {
-    renderConfig: {
-      arcoLang: serverCookies['arco-lang'],
-      arcoTheme: serverCookies['arco-theme'],
-    },
-  };
-};
+// MyApp.getInitialProps = async (appContext) => {
+//   const { ctx } = appContext;
+//   const serverCookies = cookies(ctx);
+//   return {
+//     renderConfig: {
+//       arcoLang: serverCookies['arco-lang'],
+//       arcoTheme: serverCookies['arco-theme'],
+//     },
+//   };
+// };

@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import { Switch, Divider, InputNumber } from '@arco-design/web-react';
 import useLocale from '../../utils/useLocale';
 import styles from './style/block.module.less';

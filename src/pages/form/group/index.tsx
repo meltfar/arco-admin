@@ -10,7 +10,7 @@ import {
   Button,
   Message,
 } from '@arco-design/web-react';
-import { FormInstance } from '@arco-design/web-react/es/Form';
+import type { FormInstance } from '@arco-design/web-react/es/Form';
 import axios from 'axios';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
