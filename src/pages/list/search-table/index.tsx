@@ -252,7 +252,7 @@ const SearchTable: React.FC = () => {
         },
       },
     ],
-    [loadDataList]
+    [loadDataList, router]
   );
 
   useEffect(() => {
