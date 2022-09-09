@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type { PaginationProps } from '@arco-design/web-react';
 import {
   Table,
@@ -21,6 +21,7 @@ import styles from './style/index.module.less';
 import type { ColumnProps } from '@arco-design/web-react/es/Table';
 import type { ExportDataSource } from '@/services/export_data';
 import SyntaxHighlighter from 'react-syntax-highlighter';
+import { useRouter } from 'next/router';
 
 const { Title } = Typography;
 
@@ -38,9 +39,55 @@ const getForceCluster = (col: string) => {
 const SearchTable: React.FC = () => {
   const t = useLocale(locale);
 
+  const router = useRouter();
+
   // const tableCallback = async (record, type) => {
   //   console.log(record, type);
   // };
+  const [data, setData] = useState<ExportDataSource[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
+  const [formParams, setFormParams] = useState({});
+  const [pagination, setPatination] = useState<Partial<PaginationProps>>({
+    // sizeCanChange: true,
+    // showTotal: true,
+    pageSize: 10,
+    current: 1,
+    // pageSizeChangeResetCurrent: true,
+  });
+
+  const loadDataList = useCallback(
+    (signal?: AbortSignal) => {
+      const { current, pageSize } = pagination;
+      setLoading(true);
+      axios
+        .post('/aiops-api/exportDataSource/list', {
+          data: {
+            offset: (current - 1) * pageSize,
+            max: pageSize,
+            ...formParams,
+          },
+          signal: signal ?? undefined,
+        })
+        .then((res) => {
+          setData(res.data.list);
+          setTotal(res.data.total);
+        })
+        .catch((err: Error | AxiosError) => {
+          if (axios.isAxiosError(err)) {
+            Message.error({
+              content: JSON.stringify((err as AxiosError).response.data),
+            });
+          } else {
+            console.error(err.message);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [formParams, pagination]
+  );
 
   const columns: ColumnProps<ExportDataSource>[] = useMemo(
     () => [
@@ -85,7 +132,7 @@ const SearchTable: React.FC = () => {
         },
       },
       {
-        key: 'intervalMinutes',
+        key: 'intervalMinute',
         title: '间隔时间(分钟)',
         dataIndex: 'intervalMinute',
       },
@@ -159,8 +206,44 @@ const SearchTable: React.FC = () => {
                   alignItems: 'center',
                 }}
               >
-                <Button key={`edit-${entity.id}`}>编辑</Button>
-                <Button key={`remove-${entity.id}`} status="danger">
+                <Button
+                  key={`edit-${entity.id}`}
+                  onClick={() => {
+                    router.push(`/list/insert?mode=edit&id=${entity.id}`);
+                  }}
+                >
+                  编辑
+                </Button>
+                <Button
+                  key={`remove-${entity.id}`}
+                  status="danger"
+                  onClick={() => {
+                    Modal.warning({
+                      content: '确定要删除此条配置吗？',
+                      okText: '确定',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        setLoading(true);
+                        try {
+                          const resp = await axios.get(
+                            `/aiops-api/exportDataSource/del?id=${entity.id}`
+                          );
+                          Message.success(JSON.stringify(resp.data));
+
+                          loadDataList();
+                        } catch (e: unknown) {
+                          if (axios.isAxiosError(e)) {
+                            Message.error(JSON.stringify(e.response?.data));
+                          } else {
+                            console.error(e);
+                          }
+                        } finally {
+                          setLoading(false);
+                        }
+                      },
+                    });
+                  }}
+                >
                   删除
                 </Button>
               </div>
@@ -169,52 +252,14 @@ const SearchTable: React.FC = () => {
         },
       },
     ],
-    []
+    [loadDataList]
   );
-
-  const [data, setData] = useState<ExportDataSource[]>([]);
-  const [pagination, setPatination] = useState<Partial<PaginationProps>>({
-    // sizeCanChange: true,
-    // showTotal: true,
-    pageSize: 10,
-    current: 1,
-    // pageSizeChangeResetCurrent: true,
-  });
-  const [total, setTotal] = useState<number>(0);
-  const [loading, setLoading] = useState(false);
-  const [formParams, setFormParams] = useState({});
 
   useEffect(() => {
     const ac = new AbortController();
-    const { current, pageSize } = pagination;
-    setLoading(true);
-    axios
-      .post('/aiops-api/exportDataSource/list', {
-        data: {
-          offset: (current - 1) * pageSize,
-          max: pageSize,
-          ...formParams,
-        },
-        signal: ac.signal,
-      })
-      .then((res) => {
-        setData(res.data.list);
-        setTotal(res.data.total);
-      })
-      .catch((err: Error | AxiosError) => {
-        if (axios.isAxiosError(err)) {
-          Message.error({
-            content: JSON.stringify((err as AxiosError).response.data),
-          });
-        } else {
-          console.error(err.message);
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    loadDataList(ac.signal);
     return () => ac.abort();
-  }, [formParams, pagination]);
+  }, [loadDataList]);
 
   function onChangeTable({ current, pageSize }) {
     setPatination({

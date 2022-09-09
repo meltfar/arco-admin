@@ -120,11 +120,8 @@ const InsertForm: React.FC = () => {
     return () => ac.abort();
   }, [form, router, router.query]);
 
-  const handleSubmit = useCallback(
-    async (values: Record<string, unknown>) => {
-      console.log(values);
-      setLoading(true);
-
+  const convertContent = useCallback(
+    (values: Record<string, unknown>) => {
       const content = { ...values };
       if (values.target === 'none') {
         content.target = '';
@@ -176,7 +173,19 @@ const InsertForm: React.FC = () => {
         content.exportOptions = eo;
       }
 
-      console.log('after converted: ', content);
+      console.log('converted: ', content);
+      return content;
+    },
+    [currentExporter]
+  );
+
+  const handleSubmit = useCallback(
+    async (values: Record<string, unknown>) => {
+      console.log(values);
+      setLoading(true);
+
+      const content = convertContent(values);
+
       try {
         const resp = await axios.post('/aiops-api/exportDataSource/save', {
           data: content,
@@ -196,7 +205,7 @@ const InsertForm: React.FC = () => {
         setLoading(false);
       }
     },
-    [currentExporter]
+    [convertContent]
   );
 
   useEffect(() => {
@@ -309,8 +318,46 @@ const InsertForm: React.FC = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <Button size="large" type="primary" htmlType="submit">
+                  <Button
+                    key="submit"
+                    size="large"
+                    type="primary"
+                    htmlType="submit"
+                  >
                     提交
+                  </Button>
+                  <Button
+                    key="test"
+                    size="large"
+                    type="default"
+                    onClick={async () => {
+                      setLoading(true);
+
+                      try {
+                        const data = await form.validate();
+                        const content = convertContent(data);
+
+                        const resp = await axios.post(
+                          '/aiops-api/exportDataSource/test',
+                          content
+                        );
+                        Message.success(
+                          '测试完成：' + JSON.stringify(resp.data)
+                        );
+                      } catch (e) {
+                        if (axios.isAxiosError(e)) {
+                          Message.error(
+                            '测试失败：' + JSON.stringify(e.response?.data)
+                          );
+                        } else {
+                          Message.error('测试失败：' + JSON.stringify(e));
+                        }
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                  >
+                    测试
                   </Button>
                 </div>
               </Form.Item>

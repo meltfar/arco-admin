@@ -9,11 +9,13 @@ export interface ExportDataSource {
   id: number;
   extLabels?: string; // json || nothing
   query: string; // SQL or ES
-  intervalMinutes: string; // minutes
+  intervalMinute: string; // minutes
   name: string;
-  lastQueryTime: string; // time
+  // lastQueryTime: string; // time
+  lastQueryTime: number; // time
   dataSourceId: number; // -> DataSourceConfig.id
   dataSource?: DataSourceConfig;
+  dataSourceName: string;
   //   queryOptions: string; // reserved
   description: string;
   target?: 'exportByHttp'; // exportByHttp || nothing
