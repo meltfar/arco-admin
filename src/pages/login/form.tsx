@@ -56,7 +56,7 @@ export default function LoginForm() {
         if (res.data.authCode) {
           afterLoginSuccess(params, res.data.authCode);
         } else {
-          setErrorMessage(t['login.form.login.errMsg']);
+          setErrorMessage(res.data.message ?? t['login.form.login.errMsg']);
         }
       })
       .catch((reason) => {
