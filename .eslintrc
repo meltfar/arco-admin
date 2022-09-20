@@ -10,6 +10,7 @@
   "parser": "@typescript-eslint/parser",
   "extends": [
     "prettier",
+    "plugin:@next/next/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended"
@@ -26,7 +27,11 @@
       "version": "16.8"
     }
   },
-  "plugins": ["react", "babel", "@typescript-eslint/eslint-plugin"],
+  "plugins": [
+    "react",
+    "babel",
+    "@typescript-eslint/eslint-plugin"
+  ],
   "rules": {
     "react/display-name": 0,
     "react/prop-types": 0,

@@ -45,11 +45,11 @@ const exportConfig = withLess(
       return [
         {
           source: '/api/:path*',
-          destination: 'http://192.168.150.73:8088/api/:path*',
+          destination: 'http://10.25.247.92:8080/api/:path*',
         },
         {
           source: '/aiops-api/:path*',
-          destination: 'https://app.c.vip.migu.cn/aiops-api/:path*',
+          destination: 'http://10.25.247.92:8080/aiops-api/:path*',
         },
       ];
     },

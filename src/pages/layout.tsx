@@ -1,4 +1,5 @@
-import React, { useState, ReactNode, useRef, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Layout, Menu, Breadcrumb, Spin } from '@arco-design/web-react';
 import cs from 'classnames';
 import {
@@ -18,7 +19,8 @@ import Link from 'next/link';
 import qs from 'query-string';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
-import useRoute, { IRoute } from '@/routes';
+import type { IRoute } from '@/routes';
+import useRoute from '@/routes';
 import useLocale from '@/utils/useLocale';
 import getUrlParams from '@/utils/getUrlParams';
 import styles from '@/style/layout.module.less';

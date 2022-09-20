@@ -24,7 +24,7 @@ import {
 import PermissionWrapper from '@/components/PermissionWrapper';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
-import { QualityInspection, BasicCard } from './interface';
+import type { QualityInspection, BasicCard } from './interface';
 import styles from './style/index.module.less';
 
 interface CardBlockType {
@@ -68,7 +68,7 @@ function CardBlock(props: CardBlockType) {
     if (card.status !== status) {
       setStatus(card.status);
     }
-  }, [card.status]);
+  }, [card.status, status]);
 
   const getTitleIcon = () => {
     if (type === 'service' && typeof card.icon === 'number') {
